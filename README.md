@@ -22,7 +22,7 @@ from micro import rest
 
 @rest.api("GET", "/api/<int:id>")
 def main(req):
-    return f"id={req.params.id}"
+    return f"id={req.params['id']}"
 ```
 
 ```python
