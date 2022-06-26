@@ -69,20 +69,25 @@ class HttpServer(Application):
 
                     headers = request.headers
                     logging.debug("headers: %s", dict(headers))
+                    
+                    token = request.args.get("token")
+                    
+                    if 'Authorization' in headers:
 
-                    if 'Authorization' not in headers:
-                        raise Exception({"message":"forbidden, error headers","status":403})
+                        data = headers['Authorization'].split(' ')
+                        logging.debug("Authorization: %s", data)
 
-                    data = headers['Authorization'].split(' ')
+                        if data[0] != "Bearer":
+                            raise Exception({"message":"forbidden, error authorization","status":403})
+                        
+                        token = data[1]
 
-                    logging.debug("Authorization: %s", data)
+                    elif token is None:
+                        raise Exception({"message":"forbidden, error headers","status":403})                    
 
-                    if data[0] != "Bearer":
-                        raise Exception({"message":"forbidden, error authorization","status":403})
-
-                    logging.debug("Bearer: %s", data[1])
-
-                    de = jwt.decode(data[1], SECRET_KEY, algorithms="HS256")  
+                    logging.debug("token: %s", token)
+                    
+                    de = jwt.decode(token, SECRET_KEY, algorithms="HS256")  
 
                     logging.debug("JWT: %s", de)
 
