@@ -30,9 +30,10 @@ UPLOAD_FOLDER = os.getenv("UPLOAD_FOLDER")
 
 class HttpRequest(Request):
 
-    def __init__(self, params, environ):
+    def __init__(self, params, environ, token):
         super(HttpRequest, self).__init__(environ)
         self.params = params
+        self.token = token
 
 class HttpResponse:
 
@@ -63,6 +64,8 @@ class HttpServer(Application):
                 method = request.method
                 if not method:
                     raise Exception({"message":"forbidden, error method","status":403})
+                    
+                token = None
 
                 if SECRET_KEY is not None:
                     endpoint = method + ' ' + request.url
@@ -95,7 +98,7 @@ class HttpServer(Application):
                     if not allow:
                         raise Exception({"message":"forbidden, error scope","status":403})                  
 
-                res = handle_api(HttpRequest(params, request.environ))
+                res = handle_api(HttpRequest(params, request.environ, token))
 
                 res_type = type(res)
                 if res_type == dict or res_type == list:
