@@ -143,7 +143,7 @@ class HttpServer(Application):
 
 __singleton__ = HttpServer()
 
-filters = __singleton__.jinja_env.filters
+filters = __singleton__.app.jinja_env.filters
 
 PORT = int(os.getenv("PORT") or "3000")
 ADDRESS = os.getenv("ADDRESS") or "0.0.0.0"
