@@ -124,12 +124,12 @@ class HttpServer(Application):
 
                 return abort( make_response(error_json, status) )
 
-        @self.app.route(f"/config", methods=["GET"])
-        def get_config():
+        @self.app.route(f"{endpoint}/config", methods=["GET"])
+        def get_config(**params):
             return db.all()
 
-        @self.app.route(f"/config", methods=["POST"])
-        def set_config():
+        @self.app.route(f"{endpoint}/config", methods=["POST"])
+        def set_config(**params):
             db.drop_tables()
             db.insert(request.json)
             return db.all()
