@@ -126,13 +126,11 @@ class HttpServer(Application):
 
         @self.app.route(f"{endpoint}/config", methods=["GET"])
         def get_config(**params):
-            return db.all()
+            return db.search( Query().fragment(params) )
 
         @self.app.route(f"{endpoint}/config", methods=["POST"])
         def set_config(**params):
-            db.drop_tables()
-            db.insert(request.json)
-            return db.all()
+            return db.upsert(request.json, Query().fragment(params))
 
     def run(self, address, port, workers, timeout):
 
