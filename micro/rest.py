@@ -16,7 +16,7 @@ from gunicorn.workers import sync
 from . import config
 
 from typing import Optional
-
+from tinydb import TinyDB, Query
 
 import gunicorn
 import logging
@@ -121,6 +121,16 @@ class HttpServer(Application):
                 error_json = jsonify(message=message, status=status)
 
                 return abort( make_response(error_json, status) )
+
+        @self.app.route(f"{endpoint}/config", methods=["GET"])
+        def get_config():
+            return db.all()
+
+        @self.app.route(f"{endpoint}/config", methods=["POST"])
+        def set_config():
+            db.drop_tables()
+            db.insert(request.json)
+            return db.all()
 
     def run(self, address, port, workers, timeout):
 
