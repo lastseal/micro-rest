@@ -28,6 +28,8 @@ import re
 SECRET_KEY = os.getenv("SECRET_KEY")
 UPLOAD_FOLDER = os.getenv("UPLOAD_FOLDER")
 
+db = TinyDB('db.json')
+
 class HttpRequest(Request):
 
     def __init__(self, params, environ, token):
