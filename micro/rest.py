@@ -171,8 +171,7 @@ def run(address="127.0.0.1"):
     __singleton__.run(address, PORT, WORKERS, TIMEOUT)
 
 def get_config(name):
-    Query = rest.Query()
-    item = rest.db.get(Query.name == name)
+    item = db.get(Query().name == name)
 
     if item is None:
         raise Exception({"status": 404, "message": "not found"})
