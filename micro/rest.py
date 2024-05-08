@@ -53,9 +53,11 @@ class HttpServer(Application):
 
         if UPLOAD_FOLDER is not None:
             self.app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+            logging.info("upload folder: %s", UPLOAD_FOLDER)
 
         if CORS_ENABLE:
             self.cors = CORS(self.app)
+            logging.info("CORS enabled")
 
         self.usage = None
         self.callable = None
