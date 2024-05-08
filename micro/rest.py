@@ -35,10 +35,11 @@ db = TinyDB('db.json')
 
 class HttpRequest(Request):
 
-    def __init__(self, params, environ, token):
+    def __init__(self, params, environ, token, user):
         super(HttpRequest, self).__init__(environ)
         self.params = params
         self.token = token
+        self.user = user
 
 class HttpResponse:
 
@@ -76,6 +77,7 @@ class HttpServer(Application):
                     raise Exception({"message":"forbidden, error method","status":403})
                     
                 token = None
+                user = {}
 
                 if SECRET_KEY is not None:
                     endpoint = method + ' ' + request.url
@@ -100,15 +102,15 @@ class HttpServer(Application):
 
                     logging.debug("token: %s", token)
                     
-                    de = jwt.decode(token, SECRET_KEY, algorithms="HS256")  
+                    user = jwt.decode(token, SECRET_KEY, algorithms="HS256")  
 
-                    logging.debug("JWT: %s", de)
+                    logging.debug("JWT: %s", user)
 
-                    allow = [scope for scope in de['scopes'] if re.match(scope['pattern'],endpoint)]
+                    allow = [scope for scope in user['scopes'] if re.match(scope['pattern'],endpoint)]
                     if not allow:
                         raise Exception({"message":"forbidden, error scope","status":403})                  
 
-                res = handle_api(HttpRequest(params, request.environ, token))
+                res = handle_api(HttpRequest(params, request.environ, token, user))
 
                 res_type = type(res)
                 if res_type == dict or res_type == list:
