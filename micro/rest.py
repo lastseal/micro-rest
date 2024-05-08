@@ -9,6 +9,8 @@ from flask import redirect
 from flask import make_response
 from flask import jsonify
 
+from flask_cors import CORS
+
 from gunicorn.app.base import Application, Config
 from gunicorn import glogging
 from gunicorn.workers import sync
@@ -27,6 +29,7 @@ import re
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 UPLOAD_FOLDER = os.getenv("UPLOAD_FOLDER")
+CORS_ENABLE = os.getenv("CORS_ENABLE", "FALSE").upper() == "TRUE"
 
 db = TinyDB('db.json')
 
@@ -50,6 +53,9 @@ class HttpServer(Application):
 
         if UPLOAD_FOLDER is not None:
             self.app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+        if CORS_ENABLE:
+            self.cors = CORS(self.app)
 
         self.usage = None
         self.callable = None
