@@ -1,4 +1,3 @@
-git+https://github.com/lastseal/micro-config
 Flask>=1.1.2
 Flask-Cors>=4.0.1
 gunicorn>=20.0.4
