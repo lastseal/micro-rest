@@ -17,9 +17,6 @@ from gunicorn.workers import sync
 
 from . import config
 
-from typing import Optional
-from tinydb import TinyDB, Query
-
 import gunicorn
 import logging
 import json
@@ -30,8 +27,6 @@ import re
 SECRET_KEY = os.getenv("SECRET_KEY")
 UPLOAD_FOLDER = os.getenv("UPLOAD_FOLDER")
 CORS_ENABLE = os.getenv("CORS_ENABLE", "FALSE").upper() == "TRUE"
-
-db = TinyDB('db.json')
 
 class HttpRequest(Request):
 
@@ -134,14 +129,6 @@ class HttpServer(Application):
 
                 return abort( make_response(error_json, status) )
 
-        @self.app.route(f"{endpoint}/config", methods=["GET"])
-        def get_config(**params):
-            return db.search( Query().fragment(params) )
-
-        @self.app.route(f"{endpoint}/config", methods=["POST"])
-        def set_config(**params):
-            return db.upsert(request.json, Query().fragment(params))
-
     def run(self, address, port, workers, timeout):
 
         if not self.running:
@@ -180,10 +167,3 @@ def api(method, endpoint):
 def run(address="127.0.0.1"):
     __singleton__.run(address, PORT, WORKERS, TIMEOUT)
 
-def get_config(name):
-    item = db.get(Query().name == name)
-
-    if item is None:
-        raise Exception({"status": 404, "message": "not found"})
-
-    return item
