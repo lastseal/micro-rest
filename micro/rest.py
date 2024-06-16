@@ -132,7 +132,31 @@ class HttpServer(Application):
                 error_json = jsonify(message=message, status=status)
 
                 return abort( make_response(error_json, status) )
+    def get(self, endpoint):
+        def decorator(handle):
+            self.api("GET", endpoint, handle)
+        return decorator
 
+   def post(self, endpoint):
+        def decorator(handle):
+            self.api("POST", endpoint, handle)
+        return decorator
+
+    def put(self, endpoint):
+        def decorator(handle):
+            self.api("PUT", endpoint, handle)
+        return decorator
+
+    def delete(self, endpoint):
+        def decorator(handle):
+            self.api("DELETE", endpoint, handle)
+        return decorator
+
+    def patch(self, endpoint):
+        def decorator(handle):
+            self.api("PATCH", endpoint, handle)
+        return decorator
+    
     def run(self, address=ADDRESS, port=PORT, workers=WORKERS, timeout=TIMEOUT):
 
         if not self.running:
