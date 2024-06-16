@@ -27,6 +27,10 @@ import re
 SECRET_KEY = os.getenv("SECRET_KEY")
 UPLOAD_FOLDER = os.getenv("UPLOAD_FOLDER")
 CORS_ENABLE = os.getenv("CORS_ENABLE", "FALSE").upper() == "TRUE"
+PORT = int(os.getenv("PORT") or "3000")
+ADDRESS = os.getenv("ADDRESS") or "0.0.0.0"
+WORKERS = int(os.getenv("WORKERS") or 1)
+TIMEOUT = int(os.getenv("TIMEOUT") or 30)
 
 class HttpRequest(Request):
 
@@ -153,11 +157,6 @@ __singleton__ = HttpServer()
 app = __singleton__.app
 
 filters = __singleton__.app.jinja_env.filters
-
-PORT = int(os.getenv("PORT") or "3000")
-ADDRESS = os.getenv("ADDRESS") or "0.0.0.0"
-WORKERS = int(os.getenv("WORKERS") or 1)
-TIMEOUT = int(os.getenv("TIMEOUT") or 30)
 
 def api(method, endpoint):
     def decorator(handle_api):
