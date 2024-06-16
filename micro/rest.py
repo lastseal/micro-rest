@@ -133,7 +133,7 @@ class HttpServer(Application):
 
                 return abort( make_response(error_json, status) )
 
-    def run(self, address, port, workers, timeout):
+    def run(self, address=ADDRESS, port=PORT, workers=WORKERS, timeout=TIMEOUT):
 
         if not self.running:
 
@@ -152,19 +152,19 @@ class HttpServer(Application):
     load = lambda self:self.app
         
 
-__singleton__ = HttpServer()
+server = HttpServer()
 
-app = __singleton__.app
+app = server.app
 
-filters = __singleton__.app.jinja_env.filters
+filters = server.app.jinja_env.filters
 
 def api(method, endpoint):
     def decorator(handle_api):
-        __singleton__.api(method, endpoint, handle_api)
-        __singleton__.run(ADDRESS, PORT, WORKERS, TIMEOUT)
+        server.api(method, endpoint, handle_api)
+        server.run(ADDRESS, PORT, WORKERS, TIMEOUT)
 
     return decorator
 
 def run(address="127.0.0.1"):
-    __singleton__.run(address, PORT, WORKERS, TIMEOUT)
+    server.run(address, PORT, WORKERS, TIMEOUT)
 
