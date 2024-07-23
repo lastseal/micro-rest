@@ -137,7 +137,7 @@ class HttpServer(Application):
             self.api("GET", endpoint, handle)
         return decorator
 
-   def post(self, endpoint):
+    def post(self, endpoint):
         def decorator(handle):
             self.api("POST", endpoint, handle)
         return decorator
