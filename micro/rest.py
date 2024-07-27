@@ -50,6 +50,7 @@ class HttpServer(Application):
     def __init__(self):
 
         self.app = Flask(__name__)
+        self.route_counter = 0
 
         if UPLOAD_FOLDER is not None:
             self.app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -68,7 +69,7 @@ class HttpServer(Application):
         
         logging.debug("config route %s %s", method, endpoint)
             
-        @self.app.route(endpoint, methods=[method])
+        #@self.app.route(endpoint, methods=[method])
         def handle(**params):
             try:
                 method = request.method
@@ -132,6 +133,10 @@ class HttpServer(Application):
                 error_json = jsonify(message=message, status=status)
 
                 return abort( make_response(error_json, status) )
+
+        unique_name = f"handle_{self.route_counter}"
+        self.route_counter += 1
+        self.app.add_url_rule(endpoint, unique_name, handle, methods=[method])
 
     def get(self, endpoint):
         def decorator(handle_api_get):
