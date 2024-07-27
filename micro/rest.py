@@ -134,23 +134,23 @@ class HttpServer(Application):
                 return abort( make_response(error_json, status) )
 
     def get(self, endpoint):
-        def decorator(handle):
-            self.api("GET", endpoint, handle)
+        def decorator(handle_api_get):
+            self.api("GET", endpoint, handle_api_get)
         return decorator
 
     def post(self, endpoint):
-        def decorator(handle):
-            self.api("POST", endpoint, handle)
+        def decorator(handle_api_post):
+            self.api("POST", endpoint, handle_api_post)
         return decorator
 
     def put(self, endpoint):
-        def decorator(handle):
-            self.api("PUT", endpoint, handle)
+        def decorator(handle_api_put):
+            self.api("PUT", endpoint, handle_api_put)
         return decorator
 
     def delete(self, endpoint):
-        def decorator(handle):
-            self.api("DELETE", endpoint, handle)
+        def decorator(handle_api_delete):
+            self.api("DELETE", endpoint, handle_api_delete)
         return decorator
 
     def patch(self, endpoint):
