@@ -132,6 +132,7 @@ class HttpServer(Application):
                 error_json = jsonify(message=message, status=status)
 
                 return abort( make_response(error_json, status) )
+
     def get(self, endpoint):
         def decorator(handle):
             self.api("GET", endpoint, handle)
