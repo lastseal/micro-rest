@@ -168,7 +168,6 @@ class HttpServer(Application):
         @self.app.before_request
         def before_request():
             method = request.method
-            user = {}
 
             if SECRET_KEY is not None:
                 endpoint = method + ' ' + request.url
