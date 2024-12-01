@@ -165,45 +165,6 @@ class HttpServer(Application):
     
     def run(self, address=ADDRESS, port=PORT, workers=WORKERS, timeout=TIMEOUT):
 
-        @self.app.before_request
-        def before_request():
-            method = request.method
-
-            if SECRET_KEY is not None:
-                endpoint = method + ' ' + request.url
-
-                headers = request.headers
-                logging.debug("headers: %s", dict(headers))
-                    
-                token = request.args.get("token")
-                    
-                if 'Authorization' in headers:
-
-                    data = headers['Authorization'].split(' ')
-                    logging.debug("Authorization: %s", data)
-
-                    if data[0] != "Bearer":
-                        error_json = jsonify(message="forbidden, error authorization", status=403)
-                        return abort( make_response(error_json, 403) )
-                        
-                    token = data[1]
-
-                elif token is None:
-                    error_json = jsonify(message="forbidden, error headers", status=403)
-                    return abort( make_response(error_json, 403) )
-
-                logging.debug("token: %s", token)
-                    
-                user = jwt.decode(token, SECRET_KEY, algorithms="HS256")  
-
-                logging.debug("JWT: %s", user)
-
-                allow = [scope for scope in user['scopes'] if re.match(scope['pattern'],endpoint)]
-                
-                if not allow:
-                    error_json = jsonify(message="forbidden, error scope", status=403)
-                    return abort( make_response(error_json, 403) )
-
         if not self.running:
 
             self.running = True
@@ -236,4 +197,3 @@ def api(method, endpoint):
 
 def run(address="127.0.0.1"):
     server.run(address, PORT, WORKERS, TIMEOUT)
-
