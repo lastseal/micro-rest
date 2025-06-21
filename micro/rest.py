@@ -65,7 +65,7 @@ class HttpServer(Application):
         self.prog = None
         self.running = False
     
-    def api(self, method, endpoint, handle_api):
+    def api(self, method, endpoint, scope, handle_api):
         
         logging.debug("config route %s %s", method, endpoint)
             
@@ -106,7 +106,11 @@ class HttpServer(Application):
 
                     logging.debug("JWT: %s", user)
 
-                    allow = [scope for scope in user['scopes'] if re.match(scope['pattern'],endpoint)]
+                    if scope is not None:
+                        allow = scope in user['scopes']
+                    else:
+                        allow = [scope for scope in user['scopes'] if re.match(scope['pattern'],endpoint)]
+                        
                     if not allow:
                         raise Exception({"message":"forbidden, error scope","status":403})                  
 
@@ -190,7 +194,14 @@ filters = server.app.jinja_env.filters
 
 def api(method, endpoint):
     def decorator(handle_api):
-        server.api(method, endpoint, handle_api)
+        server.api(method, endpoint, None, handle_api)
+        server.run(ADDRESS, PORT, WORKERS, TIMEOUT)
+
+    return decorator
+
+def post(endpoint, scope=None):
+    def decorator(handle_api):
+        server.api("POST", endpoint, scope, handle_api)
         server.run(ADDRESS, PORT, WORKERS, TIMEOUT)
 
     return decorator
