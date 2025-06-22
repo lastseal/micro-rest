@@ -199,6 +199,13 @@ def api(method, endpoint):
 
     return decorator
 
+def get(endpoint, scope=None):
+    def decorator(handle_api):
+        server.api("GET", endpoint, scope, handle_api)
+        server.run(ADDRESS, PORT, WORKERS, TIMEOUT)
+
+    return decorator
+
 def post(endpoint, scope=None):
     def decorator(handle_api):
         server.api("POST", endpoint, scope, handle_api)
@@ -206,5 +213,26 @@ def post(endpoint, scope=None):
 
     return decorator
 
+def put(endpoint, scope=None):
+    def decorator(handle_api):
+        server.api("PUT", endpoint, scope, handle_api)
+        server.run(ADDRESS, PORT, WORKERS, TIMEOUT)
+
+    return decorator
+
+def delete(endpoint, scope=None):
+    def decorator(handle_api):
+        server.api("DELETE", endpoint, scope, handle_api)
+        server.run(ADDRESS, PORT, WORKERS, TIMEOUT)
+
+    return decorator
+
+def patch(endpoint, scope=None):
+    def decorator(handle_api):
+        server.api("PATCH", endpoint, scope, handle_api)
+        server.run(ADDRESS, PORT, WORKERS, TIMEOUT)
+
+    return decorator
+    
 def run(address="127.0.0.1"):
     server.run(address, PORT, WORKERS, TIMEOUT)
