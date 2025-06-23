@@ -142,29 +142,29 @@ class HttpServer(Application):
         self.route_counter += 1
         self.app.add_url_rule(endpoint, unique_name, handle, methods=[method])
 
-    def get(self, endpoint):
+    def get(self, endpoint, scope=None):
         def decorator(handle_api_get):
-            self.api("GET", endpoint, handle_api_get)
+            self.api("GET", endpoint, scope, handle_api_get)
         return decorator
 
-    def post(self, endpoint):
+    def post(self, endpoint, scope=None):
         def decorator(handle_api_post):
-            self.api("POST", endpoint, handle_api_post)
+            self.api("POST", endpoint, scope, handle_api_post)
         return decorator
 
-    def put(self, endpoint):
+    def put(self, endpoint, scope=None):
         def decorator(handle_api_put):
-            self.api("PUT", endpoint, handle_api_put)
+            self.api("PUT", endpoint, scope, handle_api_put)
         return decorator
 
-    def delete(self, endpoint):
+    def delete(self, endpoint, scope=None):
         def decorator(handle_api_delete):
-            self.api("DELETE", endpoint, handle_api_delete)
+            self.api("DELETE", endpoint, scope, handle_api_delete)
         return decorator
 
-    def patch(self, endpoint):
+    def patch(self, endpoint, scope=None):
         def decorator(handle):
-            self.api("PATCH", endpoint, handle)
+            self.api("PATCH", endpoint, scope, handle)
         return decorator
     
     def run(self, address=ADDRESS, port=PORT, workers=WORKERS, timeout=TIMEOUT):
@@ -192,9 +192,9 @@ app = server.app
 
 filters = server.app.jinja_env.filters
 
-def api(method, endpoint):
+def api(method, endpoint, scope=None):
     def decorator(handle_api):
-        server.api(method, endpoint, None, handle_api)
+        server.api(method, endpoint, scope, handle_api)
         server.run(ADDRESS, PORT, WORKERS, TIMEOUT)
 
     return decorator
